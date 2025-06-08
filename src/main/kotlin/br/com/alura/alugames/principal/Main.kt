@@ -1,76 +1,83 @@
-import com.google.gson.Gson
-import com.google.gson.JsonSyntaxException
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse.BodyHandlers
-import java.util.Scanner
+package br.com.alura.alugames.principal
+
+import br.com.alura.alugames.modelo.Gamer
+import br.com.alura.alugames.modelo.Jogo
+import br.com.alura.alugames.serviços.ConsumoApi
+import transformarEmIdade
+import java.util.*
 
 
 fun main() {
 
     val leitura = Scanner(System.`in`)
-    print("Digite o codigo do jogo para buscar:")
-    val busca = leitura.nextLine()
+    val gamer = Gamer.criarGamer(leitura)
+    println("Cadastro concluido com sucesso. Dados do gamer:")
+    println(gamer)
+    println("Idade do gamer: " + gamer.dataNascimento?.transformarEmIdade())
 
-    val endereco = "https://www.cheapshark.com/api/1.0/games?id=$busca"
+    do {
+        print("Digite o codigo do jogo para buscar:")
+        val busca = leitura.nextLine()
 
-    val client: HttpClient = HttpClient.newHttpClient()
-    val request = HttpRequest.newBuilder()
-        .uri(URI.create(endereco))
-        .build()
-    val response = client
-        .send(request, BodyHandlers.ofString())
+        val buscaApi = ConsumoApi()
+        val informaaoJogo = buscaApi.buscaJogo(busca)
 
-    val json = response.body()
-    println(json)
+        var meuJogo: Jogo? = null
 
+        val resultado = runCatching {
 
-//    try {
-//        val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
-//
-//        val meuJogo = Jogo(
-//            meuInfoJogo.info.title,
-//            meuInfoJogo.info.thumb)
-//
-//        print(meuJogo)
-//
-//    } catch (ex: JsonSyntaxException){
-//        println("Jogo inexistente")
-//    }
-    var meuJogo:Jogo? = null
-
-    val resultado = runCatching {
-
-        val gson = Gson()
-        val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
-
-        meuJogo = Jogo(
-            meuInfoJogo.info.title,
-            meuInfoJogo.info.thumb)
-    }
-
-    resultado.onFailure {
-        println("Jogo inexistente. Tente outro id.")
-    }
-
-    resultado.onSuccess {
-        println("Deseja inserir uma descrição personalizada? S/N")
-        val opcao = leitura.nextLine()
-        if (opcao.equals("S", true)){
-            println("Insira a descrição personalizada para o jogo: ")
-            val descricaoPersonalizada = leitura.nextLine()
-            meuJogo?.descricao = descricaoPersonalizada
-        } else {
-            meuJogo?.descricao = meuJogo?.titulo
+            meuJogo = Jogo(
+                informaaoJogo.info.title,
+                informaaoJogo.info.thumb
+            )
         }
 
-        print(meuJogo)
+        resultado.onFailure {
+            println("br.com.alura.alugames.modelo.Jogo inexistente. Tente outro id.")
+        }
+
+        resultado.onSuccess {
+            println("Deseja inserir uma descrição personalizada? S/N")
+            val opcao = leitura.nextLine()
+            if (opcao.equals("S", true)){
+                println("Insira a descrição personalizada para o jogo: ")
+                val descricaoPersonalizada = leitura.nextLine()
+                meuJogo?.descricao = descricaoPersonalizada
+            } else {
+                meuJogo?.descricao = meuJogo?.titulo
+            }
+
+            gamer.jogosBuscados.add(meuJogo)
+        }
+
+        println("Deseja buscar um novo jogo? S/N")
+        val resposta = leitura.nextLine()
+
+    } while (resposta.equals("s", true))
+
+    println("Jogos buscados")
+    println(gamer.jogosBuscados)
+
+    println("\n Jogos ordenados por titulo: ")
+    gamer.jogosBuscados.sortBy {
+        it?.titulo
     }
 
-    resultado.onSuccess {
+    gamer.jogosBuscados.forEach {
+        println("Titulo: " + it?.titulo)
+    }
+
+    println("Deseja excluir algum jogo da lista original? (S/N")
+    val opcao = leitura.nextLine()
+    if (opcao.equals("s", true)){
+        println(gamer.jogosBuscados)
+        println("\nInforme a posicao do jogo que deseja excluir: ")
+        val posicao = leitura.nextInt()
+        gamer.jogosBuscados.removeAt(posicao)
+    }
+
+    println("\n Lista atualizada: ")
+    println(gamer.jogosBuscados)
+
     println("busca finalizada com sucesso!")
-    }
-
-
 }

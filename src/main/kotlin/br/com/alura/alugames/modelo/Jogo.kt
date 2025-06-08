@@ -1,4 +1,6 @@
-data class Jogo(val titulo: String,val capa: String)  //Construtor
+package br.com.alura.alugames.modelo
+
+data class Jogo(val titulo: String, val capa: String)  //Construtor
     {
 
     //Atributos do jogo
@@ -8,7 +10,7 @@ data class Jogo(val titulo: String,val capa: String)  //Construtor
     var descricao:String? = null
 
     override fun toString(): String {
-        return "Meu Jogo:\n" +
+        return "Meu br.com.alura.alugames.modelo.Jogo:\n" +
                 "Titulo: $titulo \n" +
                 "capa=$capa \n" +
                 "descricao=$descricao \n"
