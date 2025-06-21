@@ -23,58 +23,47 @@ class ConsumoApi {
      * @return Um objeto Result que contém InfoJogo em caso de sucesso,
      * ou uma exceção (JsonSyntaxException ou outra) em caso de falha.
      */
-    fun buscaJogo(id: String):InfoJogo {
-        val endereco = "https://www.cheapshark.com/api/1.0/games?id=$id"
 
+     private fun consumeDados(endereco: String): String {
         val client: HttpClient = HttpClient.newHttpClient()
+
         val request = HttpRequest.newBuilder()
             .uri(URI.create(endereco))
             .build()
 
-        //Envia a requisição e obtém a resposta como string
         val response = client
             .send(request, HttpResponse.BodyHandlers.ofString())
 
-        val json = response.body()
+        val jsonString = response.body()
 
-
-        if (json == "[]"){
-            println("Digite outro ID, jogo não identificado")
-        }else{
-            val gson = Gson()
-            val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
-            return meuInfoJogo
+        // --- Tratativa para JSON vazio --- //
+        if (jsonString.trim() == "[]") {
+            return "Tente outro id, jogo invalido"
         }
 
-        return TODO("Provide the return value")
+        return jsonString // Retorna o JSON real se não for vazio e nenhuma exceção ocorreu
+    }
+
+
+    fun buscaJogo(id: String):InfoJogo {
+        val endereco = "https://www.cheapshark.com/api/1.0/games?id=$id"
+        val json = consumeDados(endereco)
+
+        val gson = Gson()
+        val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
+        return meuInfoJogo
     }
 
     fun buscaGamer(): List<Gamer> {
         val endereco = "https://raw.githubusercontent.com/jeniblodev/arquivosJson/main/gamers.json"
+        val json = consumeDados(endereco)
 
-        val client: HttpClient = HttpClient.newHttpClient()
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create(endereco))
-            .build()
+        val gson = Gson()
+        val meuGamerTipo = object : TypeToken<List<InfoGamerJson>>() {}.type
+        val ListaGamer: List<InfoGamerJson> = gson.fromJson(json, meuGamerTipo)
 
-        val response = client
-            .send(request, HttpResponse.BodyHandlers.ofString())
+        val listaGamerConvertida = ListaGamer.map { infoGamerJson -> infoGamerJson.CriaGamer() }
 
-        val json = response.body()
-
-
-        if (json == "[]"){
-            println("Digite outro ID, jogo não identificado")
-        }else{
-            val gson = Gson()
-            val meuGamerTipo = object : TypeToken<List<InfoGamerJson>>() {}.type
-            val ListaGamer: List<InfoGamerJson> = gson.fromJson(json, meuGamerTipo)
-
-            val listaGamerConvertida = ListaGamer.map { infoGamerJson -> infoGamerJson.CriaGamer() }
-
-            return listaGamerConvertida
-        }
-
-        return TODO("Provide the return value")
+        return listaGamerConvertida
     }
 }
