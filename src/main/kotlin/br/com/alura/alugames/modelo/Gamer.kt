@@ -57,7 +57,6 @@ data class Gamer(var nome:String, var email:String) {
         }
     }
 
-    // Código suprimido
 
     companion object {
         fun criarGamer(leitura: Scanner): Gamer {
