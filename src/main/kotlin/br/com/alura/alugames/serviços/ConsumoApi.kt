@@ -1,7 +1,10 @@
 package br.com.alura.alugames.serviços
 
+import br.com.alura.alugames.modelo.Gamer
+import br.com.alura.alugames.modelo.InfoGamerJson
 import br.com.alura.alugames.modelo.InfoJogo
 import br.com.alura.alugames.modelo.Jogo
+import br.com.alura.alugames.utilitario.CriaGamer
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
@@ -41,6 +44,35 @@ class ConsumoApi {
             val gson = Gson()
             val meuInfoJogo = gson.fromJson(json, InfoJogo::class.java)
             return meuInfoJogo
+        }
+
+        return TODO("Provide the return value")
+    }
+
+    fun buscaGamer(): List<Gamer> {
+        val endereco = "https://raw.githubusercontent.com/jeniblodev/arquivosJson/main/gamers.json"
+
+        val client: HttpClient = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(endereco))
+            .build()
+
+        val response = client
+            .send(request, HttpResponse.BodyHandlers.ofString())
+
+        val json = response.body()
+
+
+        if (json == "[]"){
+            println("Digite outro ID, jogo não identificado")
+        }else{
+            val gson = Gson()
+            val meuGamerTipo = object : TypeToken<List<InfoGamerJson>>() {}.type
+            val ListaGamer: List<InfoGamerJson> = gson.fromJson(json, meuGamerTipo)
+
+            val listaGamerConvertida = ListaGamer.map { infoGamerJson -> infoGamerJson.CriaGamer() }
+
+            return listaGamerConvertida
         }
 
         return TODO("Provide the return value")
