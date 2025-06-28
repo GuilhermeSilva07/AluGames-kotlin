@@ -1,6 +1,7 @@
 package br.com.alura.alugames.modelo
 
 import java.lang.IllegalArgumentException
+import java.time.LocalDate
 import java.util.Scanner
 import kotlin.random.Random
 
@@ -57,6 +58,9 @@ data class Gamer(var nome:String, var email:String) {
         }
     }
 
+    fun alugaJogo(jogo: Jogo, periodo: Periodo): Aluguel{
+        return Aluguel(this,jogo, periodo)
+    }
 
     companion object {
         fun criarGamer(leitura: Scanner): Gamer {
