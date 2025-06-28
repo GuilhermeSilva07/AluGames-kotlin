@@ -18,7 +18,7 @@ data class Gamer(var nome:String, var email:String) {
         private set
 
     val jogosBuscados = mutableListOf<Jogo?>()
-
+    val JogosAlugados = mutableListOf<Aluguel>()
 
     constructor(nome: String, email: String, dataNascimento:String, usuario:String) :
             this(nome, email){
@@ -26,17 +26,12 @@ data class Gamer(var nome:String, var email:String) {
                 this.usuario = usuario
                 criarIdInterno()
             }
-
-    /*O init é utilizado para inicializar uma classe ou um bloco de código que faz parte do processo de
-    inicialização de uma classe. Podemos utilizá-lo para executar alguma lógica de inicialização ou alguma
-    configuração adicional para a classe, por exemplo, e ele é sempre executado logo após a execução do construtor primário.
-     */
-//    init {
-//        if (nome.isNullOrBlank()){
-//            throw IllegalArgumentException("Nome inválido")
-//        }
-//        this.email = validarEmail()
-//    }
+    init {
+        if (nome.isNullOrBlank()){
+            throw IllegalArgumentException("Nome inválido")
+        }
+        this.email = validarEmail()
+    }
 
     override fun toString(): String {
         return "Gamer(nome='$nome', email='$email', dataNascimento=$dataNascimento, usuario=$usuario, idInterno=$idInterno)"
