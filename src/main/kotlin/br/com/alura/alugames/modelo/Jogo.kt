@@ -1,20 +1,22 @@
 package br.com.alura.alugames.modelo
 
 import com.google.gson.annotations.Expose
+import formatoComDuasCasasDecimais
+import java.math.BigDecimal
 
 data class Jogo(@Expose val titulo: String,
                 @Expose val capa: String): Recomendavel {
     var descricao:String? = null
-    var preco = 0.0
+    var preco = BigDecimal("0.0")
     private val ListaNotas = mutableListOf<Int>()
 
     override val media: Double
-        get() = ListaNotas.average()
+        get() = ListaNotas.average().formatoComDuasCasasDecimais()
 
     override fun recomendar(nota: Int) {
         ListaNotas.add(nota)
     }
-    constructor(titulo: String, capa: String, preco: Double, descricao: String):
+    constructor(titulo: String, capa: String, preco: BigDecimal, descricao: String):
                     this(titulo, capa){
                 this.preco= preco
                 this.descricao= descricao
@@ -24,7 +26,8 @@ data class Jogo(@Expose val titulo: String,
                 return "Meu Jogo: \n" +
                         "Título: $titulo \n" +
                         "Capa: $capa \n" +
-                        "Preço: $preco " +
-                        "Descricao: $descricao"
+                        "Descricao: $descricao \n" +
+                        "Preço: $preco \n" +
+                        "Reputação: $media"
             }
         }
