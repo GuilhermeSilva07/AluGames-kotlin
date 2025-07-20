@@ -55,9 +55,7 @@ from
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="6b317e59-ddc8-49f6-aaf5-eca6f1c1d2e8" object-ref="schemas/alugames/tables/jogos" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="6b317e59-ddc8-49f6-aaf5-eca6f1c1d2e8" />
