@@ -13,7 +13,7 @@ import javax.persistence.*
 
     @Entity
     @DiscriminatorValue("Avulso")
-    class PlanoAvulsoEntity(tipo: String = "Plano Avulso", id: Int): PlanoEntity(tipo, id)
+    class PlanoAvulsoEntity(tipo: String = "Plano Avulso", id: Int = 0): PlanoEntity(tipo, id)
 
     @Entity
     @DiscriminatorValue("Assinatura")

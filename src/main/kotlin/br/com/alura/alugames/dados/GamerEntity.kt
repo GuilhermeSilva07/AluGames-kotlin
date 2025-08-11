@@ -10,7 +10,9 @@ class GamerEntity(
     val nome: String = "Nome do gamer",
     val email: String = "email@gmail.com",
     val dataNascimento: String? = null,
-    val usuario: String? = null){
+    val usuario: String? = null,
+    @ManyToOne
+    val plano: PlanoEntity = PlanoEntity.PlanoAvulsoEntity()){
 
 }
 
